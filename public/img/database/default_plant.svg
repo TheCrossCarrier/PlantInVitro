@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1000 1000" style="enable-background:new 0 0 1000 1000;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#E0E0E0}
+	.st1{fill:#F2F2F2}
+	.st2{fill:#CCCCCC}
+	.st3{fill:none;stroke:#CCCCCC;stroke-width:15.4862;stroke-linecap:round;stroke-miterlimit:10}
+	.st4{fill:none;stroke:#CCCCCC;stroke-width:11.6147;stroke-linecap:round;stroke-miterlimit:10}
+</style>
+<g>
+	<rect y="0" class="st0" width="1000" height="1000"/>
+</g>
+<g>
+	<circle class="st1" cx="500" cy="500" r="336"/>
+	<g>
+		<path class="st2" d="M506.11,411.35c2.94-10.36-40.64-41.45-90.59-47.23c-91.16-10.55-185.64,65.29-177.32,93.69
+			c4.9,16.74,47.13,22.61,78.21,17.03c46.51-8.34,51.35-39.31,102.98-54.98C467.9,405.15,503.54,420.39,506.11,411.35z"/>
+		<path class="st2" d="M540.71,425.73c-3.73-6.1,18.62-33.79,49.56-46.4c56.47-23.02,130.48,8.67,130.22,28.34
+			c-0.15,11.59-26.14,22.88-47.02,24.86c-31.26,2.96-39.89-16-75.73-16.82C564.07,414.95,543.97,431.06,540.71,425.73z"/>
+		<path class="st3" d="M496.82,408.25c9.09,16.12,17.85,34.17,25.55,54.2c31.84,82.81,30.34,159.72,24,210.61"/>
+		<path class="st4" d="M561.86,409.03c-9.63,6.33-23.15,17.3-33.3,34.84c-2.96,5.12-5.23,10.1-6.97,14.71"/>
+	</g>
+</g>
+</svg>

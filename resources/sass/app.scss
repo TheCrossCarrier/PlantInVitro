@@ -1,0 +1,29 @@
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+// Bootstrap Icons
+@import '~bootstrap-icons/font/bootstrap-icons.css';
+
+// Дополнительные utility классы
+.object-fit-cover {
+  object-fit: cover !important;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+.text-decoration-thickness-light {
+  text-decoration-thickness: .0625em !important;
+}
+
+.text-justify {
+  text-align: justify !important;
+}
+
+.bg-gray-500 {
+  background-color: $gray-500 !important;
+}
