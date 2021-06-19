@@ -16,7 +16,7 @@
 </head>
 
 <body class="antialiased bg-light">
-    @include('layouts.header')
+    @include('layouts.header', ['active' => $navbar_active ?? null])
 
     <main class="main">
         @yield('content')
@@ -24,7 +24,6 @@
 
     @include('layouts.footer')
 
-    {{-- Тосты (всплывающие уведомления) --}}
     @if (Session::has('logged_in'))
         <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
             <div class="toast fade align-items-center text-white bg-primary" id="loggedInToast" role="alert"

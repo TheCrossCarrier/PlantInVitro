@@ -1,12 +1,14 @@
 @extends('layouts.app')
 
-@section('edit.title') @yield('title') @endsection
+@section('title')
+    @yield('form.title')
+@endsection
 
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
             <div class="col col-sm-10 col-md-8 col-lg-6 col-xl-5">
-                <h2 class="my-4">@yield('edit.title')</h2>
+                <h2 class="my-4">@yield('form.title')</h2>
 
                 {{-- @if ($errors->any())
                     <ul class="list-unstyled">
@@ -19,12 +21,11 @@
                 @endif --}}
                 @if (session('success'))
                     <x-alert type="success">
-                        @yield('edit.success-message')
+                        @yield('form.success-message')
                     </x-alert>
                 @endif
 
-                @yield('edit.content')
-
+                @yield('form.content')
             </div>
         </div>
     </div>

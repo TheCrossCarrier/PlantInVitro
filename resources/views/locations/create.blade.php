@@ -1,9 +1,9 @@
-@extends('layouts.add')
+@extends('layouts.form')
 
-@section('add.title', 'локацию')
+@section('form.title', 'Добавить локацию')
 
-@section('add.content')
-    <form action="{{ route('location.store') }}" method="POST" novalidate>
+@section('form.content')
+    <form action="{{ route('locations.store') }}" method="POST" novalidate>
         @csrf
 
         <div class="mb-3 has-validation">
@@ -20,7 +20,7 @@
     </form>
 @endsection
 
-@section('add.success-message')
+@section('form.success-message')
     Локация успешно добавлена.
-    <a class="fw-bold" href="{{ route('plant.create') }}"> Добавить растение.</a>
+    <a class="fw-bold" href="{{ route('plants.create') }}"> Добавить растение.</a>
 @endsection

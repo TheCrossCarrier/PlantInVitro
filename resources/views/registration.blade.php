@@ -33,8 +33,8 @@
                     </div>
 
                     <div class="mb-3 has-validation">
-                        <label class="form-label" for="repeat_password">Повторите пароль</label>
-                        <x-form-control name="repeat_password" type="password" required />
+                        <label class="form-label" for="password_confirmation">Повторите пароль</label>
+                        <x-form-control name="password_confirmation" type="password" required />
                     </div>
 
                     <div class="d-grid py-2">

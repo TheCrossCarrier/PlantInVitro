@@ -5,7 +5,8 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <form class="card col col-sm-11 col-md-9 col-lg-7 col-xl-6 needs-validation my-5 mx-2 p-0" action="{{ route('login') }}" method="POST" novalidate>
+            <form class="card col col-sm-11 col-md-9 col-lg-7 col-xl-6 needs-validation my-5 mx-2 p-0"
+                action="{{ route('authenticate') }}" method="POST" novalidate>
                 @csrf
 
                 <header class="card-header">

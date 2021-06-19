@@ -16,4 +16,9 @@ class Planting extends Model
         'plant_id',
         'container_id',
     ];
+
+    public function action()
+    {
+        return $this->belongsTo(Action::class);
+    }
 }

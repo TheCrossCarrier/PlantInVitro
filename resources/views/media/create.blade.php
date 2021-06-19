@@ -1,8 +1,8 @@
-@extends('layouts.add')
+@extends('layouts.form')
 
-@section('add.title', 'питательную среду')
+@section('form.title', 'питательную среду')
 
-@section('add.content')
+@section('form.content')
     <form action="{{ route('medium.store') }}" method="POST" novalidate>
         @csrf
 
@@ -20,7 +20,7 @@
     </form>
 @endsection
 
-@section('add.success-message')
+@section('form.success-message')
     Питательная среда успешно добавлена.
-    <a class="fw-bold" href="{{ route('plant.create') }}"> Добавить растение.</a>
+    <a class="fw-bold" href="{{ route('plants.create') }}"> Добавить растение.</a>
 @endsection

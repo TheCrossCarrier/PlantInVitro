@@ -1,10 +1,10 @@
-@extends('layouts.edit')
+@extends('layouts.form')
 
-@php $title = "Пересадка растения №$id" @endphp
-@section('edit.title', $title)
+@php $title = "Пересадка растения №$plant_id" @endphp
+@section('form.title', $title)
 
-@section('edit.content')
-    <form action="{{ route('plant.store-transplantation', $id) }}" method="POST" novalidate>
+@section('form.content')
+    <form action="{{ route('plants.transplant.store', $plant_id) }}" method="POST" novalidate>
         @csrf
 
         <div class="mb-3 has-validation">
@@ -29,11 +29,14 @@
 
         <div class="d-flex align-items-center">
             <button class="btn btn-success ms-auto" type="submit">Сохранить</button>
-            <a class="btn btn-secondary ms-2" href="{{ url()->previous() }}">Назад</a>
+            <a class="btn btn-secondary ms-2" href="
+                {{ route('plants.show', $plant_id) }}
+                {{-- {{ url()->previous() }} --}}
+                ">Назад</a>
         </div>
     </form>
 @endsection
 
-@section('edit.success-message')
+@section('form.success-message')
     Данные сохранены.
 @endsection

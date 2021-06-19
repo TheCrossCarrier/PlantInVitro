@@ -14,33 +14,34 @@
         <x-navbar-collapse class="justify-content-between px-3" id="navList">
             <x-navbar-nav scroll>
                 <li class="nav-item">
-                    <a class="nav-link @if (Route::currentRouteName()==='home' ) active @endif" href="{{ route('home') }}"
-                        aria-current="page">Главная</a>
+                    <a class="nav-link @if ($active==='home' ) active" aria-current="page" @else " @endif
+                        href=" {{ route('home') }}">Главная</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link @if (Route::currentRouteName()==='view' ) active @endif" href="{{ route('view') }}">Просмотр</a>
+                    <a class="nav-link @if ($active==='view' ) active" aria-current="page" @else " @endif
+                        href=" {{ route('plants.index') }}">Просмотр</a>
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link @if (preg_match('/^add/', Route::current()->uri)) active @endif dropdown-toggle" id="navbarAdd" href="#"
-                        data-bs-toggle="dropdown" aria-expanded="false">Добавить</a>
+                    <a class="nav-link dropdown-toggle @if ($active==='add' ) active" aria-current="page" @else " @endif
+                        id="navbarAdd" href="#" data-bs-toggle="dropdown" aria-expanded="false">Добавить</a>
 
                     <ul class="dropdown-menu dropdown-menu-dark mb-3" aria-labelledby="navbarAdd">
                         <li>
-                            <a class="dropdown-item" href="{{ route('plant.create') }}">Растение</a>
+                            <a class="dropdown-item" href="{{ route('plants.create') }}">Растение</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('taxon.create') }}">Таксон</a>
+                            <a class="dropdown-item" href="{{ route('taxa.create') }}">Таксон</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('medium.create') }}">Питательную среду</a>
+                            <a class="dropdown-item" href="{{ route('media.create') }}">Питательную среду</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('location.create') }}">Локацию</a>
+                            <a class="dropdown-item" href="{{ route('locations.create') }}">Локацию</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('container-type.create') }}">Тип контейнера</a>
+                            <a class="dropdown-item" href="{{ route('container-types.create') }}">Тип контейнера</a>
                         </li>
                     </ul>
                 </li>

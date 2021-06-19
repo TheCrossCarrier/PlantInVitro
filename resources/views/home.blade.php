@@ -2,6 +2,8 @@
 
 @section('title', 'Онлайн база данных растений in vitro')
 
+@php $navbar_active = 'home' @endphp
+
 @section('content')
     <div class="container">
         <div class="card my-5 shadow">

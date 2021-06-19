@@ -1,8 +1,8 @@
-@extends('layouts.add')
+@extends('layouts.form')
 
-@section('add.title', 'таксон')
+@section('form.title', 'таксон')
 
-@section('add.content')
+@section('form.content')
     {{-- @if ($errors->any())
         <ul class="list-unstyled">
             @foreach ($errors->all() as $error)
@@ -43,7 +43,7 @@
     </form>
 @endsection
 
-@section('add.success-message')
+@section('form.success-message')
     Таксон успешно добавлен.
-    <a class="fw-bold" href="{{ route('plant.create') }}"> Добавить растение.</a>
+    <a class="fw-bold" href="{{ route('plants.create') }}"> Добавить растение.</a>
 @endsection

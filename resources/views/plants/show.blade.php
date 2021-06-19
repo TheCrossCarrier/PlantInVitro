@@ -6,9 +6,9 @@
     <section class="container">
         <main class="row flex-column align-items-start my-3">
             <div class="col row flex-column flex-md-row align-items-center align-items-md-start m-0 p-0">
-                {{-- Левая часть --}}
+                {{-- Left side --}}
                 <div class="col col-md-6 col-lg-5 col-xl-4 row flex-column">
-                    {{-- Название и Фото --}}
+                    {{-- Name and Photo --}}
                     <figure class="col card p-0 shadow">
                         <figcaption class="card-header">
                             <h2 class="card-title text-center">{{ $plant->name }}</h2>
@@ -18,9 +18,9 @@
                             alt="{{ $plant->name }}" />
                     </figure>
 
-                    {{-- Информация --}}
+                    {{-- Info --}}
                     <footer class="col container p-0">
-                        {{-- Статус --}}
+                        {{-- Status --}}
                         <div class="input-group row ms-0">
                             <label class="col-7 input-group-text" for="status">Статус</label>
                             <x-form-control
@@ -28,21 +28,21 @@
                                 name="status" :value="$plant->death ? 'Погиб' : 'В работе'" />
                         </div>
 
-                        {{-- Родитель --}}
-                        <a class="input-group row ms-0 mt-2 text-decoration-none" @if ($plant->parent) href="{{ route('plant.index', $plant->parent->id) }}" @endif>
+                        {{-- Parent --}}
+                        <a class="input-group row ms-0 mt-2 text-decoration-none" @if ($plant->parent) href="{{ route('plants.show', $plant->parent->id) }}" @endif>
                             <label class="col-7 input-group-text" for="parent">Родитель</label>
 
                             <x-form-control
                                 class="col text-center text-truncate {{ $plant->parent ? 'text-decoration-underline text-decoration-thickness-light' : '' }} cursor-pointer"
                                 readonly name="parent" value="{{ $plant->parent->name ?? '--/--' }}" />
                         </a>
-                        {{-- Последнее действие --}}
+                        {{-- Last action --}}
                         <div class="input-group row ms-0 mt-2">
                             <label class="col-7 input-group-text" for="last_action_date">Последнее действие</label>
                             <x-form-control class="col text-center" readonly name="last_action_date"
                                 :value="(new DateTime($actions->last()->date))->format('d.m.y G:i')" />
                         </div>
-                        {{-- Последнее редактирование --}}
+                        {{-- Last edit --}}
                         <div class="input-group row ms-0 mt-2">
                             <label class="col-7 input-group-text" for="last_edit_date">Последнее редактирование</label>
                             <x-form-control class="col text-center" readonly name="last_edit_date"
@@ -51,27 +51,31 @@
                     </footer>
                 </div>
 
-                {{-- Правая часть --}}
+                {{-- Right side --}}
                 <div class="col col-md-6 col-lg-7 col-xl-8 m-0 ms-md-3 p-0 py-1">
-                    {{-- Панель управления --}}
+                    {{-- Control panel --}}
                     <div>
                         <div class="d-flex justify-content-center justify-content-sm-end align-items-center px-2">
                             <a class="btn btn-success @if ($plant->death) disabled @endif d-flex align-items-center bg-transparent border-0 p-2 lh-1 text-success"
-                                href="{{ route('plant.transplant', $plant->id) }}">
+                                href="
+                                {{ route('plants.transplant.create', $plant->id) }}
+                                ">
                                 <i class="bi bi-reply-fill fs-4 me-2"></i>
                                 Пересадить
                             </a>
 
                             <a class="btn btn-info @if ($plant->death) disabled @endif d-flex align-items-center bg-transparent border-0 ms-0 ms-lg-2 p-2 lh-1
                                 text-info"
-                                href="{{ route('plant.edit', $plant->id) }}">
+                                href="{{ route('plants.edit', $plant->id) }}">
                                 <i class="bi bi-pencil-fill fs-5 me-2"></i>
                                 Редактировать
                             </a>
 
                             <a class="btn btn-danger @if ($plant->death) disabled @endif d-flex align-items-center bg-transparent border-0 ms-0 ms-lg-2 p-2 lh-1
                                 text-danger"
-                                href="{{ route('plant.died', $plant->id) }}">
+                                href="
+                                {{-- {{ route('plant.died', $plant->id) }} --}}
+                                ">
                                 <i class="bi bi-x-lg fs-5 me-2"></i>
                                 Погибло
                             </a>
@@ -81,7 +85,7 @@
                         <hr class="mt-1" />
                     </div>
 
-                    {{-- Описание --}}
+                    {{-- Description --}}
                     <article class="card mb-3 shadow">
                         <header class="card-header">
                             <h3 class="card-title ms-3 fs-4">Описание</h3>
@@ -93,9 +97,9 @@
                         </main>
                     </article>
 
-                    {{-- Номер & Локализация --}}
+                    {{-- ID & Locatization --}}
                     <div class="row flex-column flex-xl-row m-0 p-0">
-                        {{-- Номер --}}
+                        {{-- ID --}}
                         <article class="card col mb-3 p-0 shadow">
                             <header class="card-header">
                                 <h3 class="card-title fs-4 text-center">Номер</h3>
@@ -105,7 +109,7 @@
                             </main>
                         </article>
 
-                        {{-- Локализация --}}
+                        {{-- Localization --}}
                         <article class="card col mb-3 ms-xl-3 p-0 shadow">
                             <header class="card-header">
                                 <h3 class="card-title fs-4 text-center">Локализация</h3>
@@ -123,9 +127,9 @@
                         </article>
                     </div>
 
-                    {{-- Таксономия & Контейнер --}}
+                    {{-- Taxonomy & Container --}}
                     <div class="row flex-column flex-xl-row m-0 p-0">
-                        {{-- Таксономия --}}
+                        {{-- Taxonomy --}}
                         <article class="card col mb-3 p-0 shadow">
                             <header class="card-header">
                                 <h3 class="card-title fs-4 text-center">Таксономия</h3>
@@ -191,7 +195,7 @@
                             </ul>
                         </article>
 
-                        {{-- Контейнер --}}
+                        {{-- Container --}}
                         <article class="card col mb-3 ms-xl-3 p-0 shadow">
                             <header class="card-header">
                                 <h3 class="card-title fs-4 text-center">Контейнер</h3>
@@ -234,13 +238,11 @@
                         </article>
                     </div>
 
+                    {{-- Actions --}}
                     <hr class="my-0" />
-
                     <h3 class="mt-1 mx-3 py-1">Действия</h3>
-
                     <hr class="mt-0" />
 
-                    {{-- Действия --}}
                     @foreach ($actions->reverse() as $action)
                         <article class="card mb-3 shadow">
                             <header class="card-header d-flex position-relative">
@@ -253,7 +255,7 @@
                                 <div class="card-text ps-4">
                                     <p class="lead mb-0 lh-lg">
                                         @switch($action->type_id) {{-- ActionTypeSeeder::$types --}}
-                                            {{-- Посадка --}}
+                                            {{-- Planting --}}
                                             @case(1)
                                                 <b>Таксон: </b>
                                                 <a class="link-dark text-decoration-thickness-light" href="">
@@ -275,17 +277,17 @@
                                                 </a>
                                             @break
 
-                                            {{-- Гибель --}}
+                                            {{-- Death --}}
                                             @case(2)
                                                 <b>Причина: </b>
                                                 {{ $action->cause }}
                                             @break
 
-                                            {{-- Подпитка --}}
+                                            {{-- Nutrition --}}
                                             @case(3)
                                             @break
 
-                                            {{-- Релокация --}}
+                                            {{-- Relocation --}}
                                             @case(4)
                                                 <b>Новая локация: </b>
                                                 <a class="link-dark text-decoration-thickness-light" href="">
@@ -293,7 +295,7 @@
                                                 </a>
                                             @break
 
-                                            {{-- Пересадка --}}
+                                            {{-- Transplanting --}}
                                             @case(5)
                                                 @php $container = $Container::find($action->container_id) @endphp
                                                 <b>Тип контейнера: </b>
@@ -304,6 +306,11 @@
                                                 <b>Номер контейнера: </b>
                                                 <a class="link-dark text-decoration-thickness-light" href="">
                                                     {{ $container->id }}
+                                                </a>
+                                                <br />
+                                                <b>Питательная среда: </b>
+                                                <a class="link-dark text-decoration-thickness-light" href="">
+                                                    {{ $container->medium->name }}
                                                 </a>
                                             @break
                                         @endswitch
@@ -327,6 +334,7 @@
                         </article>
                     @endforeach
                 </div>
+            </div>
         </main>
     </section>
 @endsection

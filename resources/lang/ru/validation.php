@@ -18,7 +18,7 @@ return [
         'array' => 'Поле :attribute должно содержать от :min до :max элементов.',
     ],
     // 'boolean' => 'The :attribute field must be true or false.',
-    // 'confirmed' => 'The :attribute confirmation does not match.',
+    'confirmed' => 'Подтверждение поля :attribute не совпадает.',
     'date' => 'Поле :attribute не является правильной датой.',
     // 'date_equals' => 'The :attribute must be a date equal to :date.',
     'date_format' => 'Поле :attribute не совпадает с форматом :format.',
@@ -119,7 +119,7 @@ return [
     'attributes' => [
         'username' => 'имя пользователя',
         'password' => 'пароль',
-        'repeat_password' => 'повторение пароля',
+        'password_confirmation' => 'повторение пароля',
         'name' => 'название',
         'short_name' => 'краткое название',
         'taxon' => 'таксон',

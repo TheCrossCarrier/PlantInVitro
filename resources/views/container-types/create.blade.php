@@ -1,8 +1,8 @@
-@extends('layouts.add')
+@extends('layouts.form')
 
-@section('add.title', 'тип контейнера')
+@section('form.title', 'тип контейнера')
 
-@section('add.content')
+@section('form.content')
     <form action="{{ route('container-type.store') }}" method="POST" novalidate>
         @csrf
 
@@ -15,7 +15,7 @@
     </form>
 @endsection
 
-@section('add.success-message')
+@section('form.success-message')
     Тип контейнера успешно добавлен.
-    <a class="fw-bold" href="{{ route('plant.create') }}"> Добавить растение.</a>
+    <a class="fw-bold" href="{{ route('plants.create') }}"> Добавить растение.</a>
 @endsection

@@ -6,7 +6,6 @@ use App\Models\Action;
 use App\Models\Container;
 use App\Models\ContainerType;
 use App\Models\Death;
-use App\Models\DeathCause;
 use App\Models\Location;
 use App\Models\Medium;
 use App\Models\Plant;
@@ -22,56 +21,32 @@ use Illuminate\Validation\Rule;
 
 class PlantController extends Controller
 {
-    # Метод, работающий со страницей растения
-    public function index($id)
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
     {
-        $plant = Plant::find($id);
-
-        $nutrition = [];
-        $relocations = [];
-        foreach ($plant->containers as $container) {
-            foreach ($container->nutrition as $nutritionEl) {
-                $nutrition[] = $nutritionEl;
-            }
-            foreach ($container->relocations as $relocationsEl) {
-                $relocations[] = $relocationsEl;
-            }
-        }
-
-        # Слияние всех действий в один массив и удаление null элементов
-        $actions = collect([...$plant->plantings, $plant->death, ...$relocations, ...$nutrition])
-            ->reject(fn ($value) => is_null($value))
-            ->sortBy('date');
-
-        $last_container = $plant->containers->last();
-        $last_relocation = $last_container->relocations->last();
-
-        $img_path = $plant->img_filename ? Storage::url('img/' . $plant->img_filename) : null;
-
+        $plants = Plant::all();
         $Container = Container::class;
 
-        return view('plant.index', compact(
-            'plant',
-            'actions',
-            'last_container',
-            'last_relocation',
-            'img_path',
-            'Container',
-        ));
+        return view('plants.index', compact('plants', 'Container'));
     }
 
-    # Метод, работающий со страницей создания растения
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create()
     {
         $container_types = ContainerType::pluck('name', 'id');
-
         $media = Medium::pluck('name', 'id');
-
         $taxa = Taxon::all();
-
         $locations = Location::pluck('name', 'id');
 
-        return view('plant.create', compact(
+        return view('plants.create', compact(
             'container_types',
             'media',
             'taxa',
@@ -79,39 +54,44 @@ class PlantController extends Controller
         ));
     }
 
-    # Метод, создающий запись в БД о растении и его атрибутах
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
         $container_id = $request->input('container_id');
-        # Проверка доступности id контейнера (если был задан)
         if ($container_id && Container::find($container_id)) {
-            return back()->withErrors('Номер контейнера ' . $container_id . ' уже занят.');
+            abort(400, 'Номер контейнера ' . $container_id . ' уже занят.');
         }
 
-        # Валидация
         $validatedRequest = $request->validate([
-            'name' => 'required|string',
+            'name' => 'required|string|max:255',
             'date_time' => 'required|date',
             'taxon_id' => 'required|integer|min:1',
             'container_id' => 'nullable|integer|min:1',
             'container_type_id' => 'required|integer|min:1',
+            'medium_id' => 'required|integer|min:1',
             'img' => 'file|mimes:jpg,jpeg,png',
+            'description' => 'nullable|string|max:255',
+            'comment' => 'nullable|string|max:255',
         ]);
 
-        # Обработка фото
-        $new_img_name = null;
+        # Plant image handling
+        $new_img_filename = null;
         if ($request->hasFile('img')) {
-            $new_img_name = uniqid() . '-' . $request->name . '.' . $request->img->extension();
-            $request->file('img')->storeAs('public/img', $new_img_name);
+            $new_img_filename = uniqid() . '-' . $request->name . '.' . $request->img->extension();
+            $request->file('img')->storeAs('public/img', $new_img_filename);
         }
 
-        # Создание записей в БД
         try {
             DB::beginTransaction();
             $plant = Plant::create(array_merge(
                 $validatedRequest,
                 [
-                    'img_filename' => $new_img_name,
+                    'img_filename' => $new_img_filename,
                     'user_id' => Auth::id(),
                 ],
             ));
@@ -136,10 +116,11 @@ class PlantController extends Controller
                 'container_id' => $container->id,
             ]);
 
-            if ($request->location_id) {
+            if ($request->input('location_id')) {
                 $action_relocate = Action::create([
                     'type_id' => 4, # ActionTypeSeeder::$types
                     'date' => $request->input('date_time'),
+                    'user_id' => Auth::id(),
                 ]);
 
                 Relocation::create([
@@ -148,14 +129,9 @@ class PlantController extends Controller
                     'location_id' => $request->input('location_id'),
                 ]);
             }
-        } catch (\Illuminate\Database\QueryException $e) {
-            DB::rollback();
-            return back()
-                ->withErrors('Ошибка запроса: ' . $e->getMessage());
         } catch (\Exception $e) {
             DB::rollback();
-            return back()
-                ->withErrors($e->getMessage());
+            return abort(500, $e->getMessage());
         }
         DB::commit();
 
@@ -165,152 +141,133 @@ class PlantController extends Controller
             ->with('container_id', $container->id);
     }
 
-    # Метод, работающий со страницей редактирования информации о растении
-    public function edit($id)
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
     {
-        $this->existsOrDeadCheck($id);
+        $this->plantExistsCheck($id);
 
         $plant = Plant::find($id);
 
-        return view('plant.edit', compact('plant'));
+        $nutrition = [];
+        $relocations = [];
+        foreach ($plant->containers as $container) {
+            foreach ($container->nutrition as $nutritionEl) {
+                $nutrition[] = $nutritionEl;
+            }
+            foreach ($container->relocations as $relocationsEl) {
+                $relocations[] = $relocationsEl;
+            }
+        }
+
+        $actions = collect([...$plant->plantings, $plant->death, ...$relocations, ...$nutrition])
+            ->reject(fn ($value) => is_null($value))
+            ->sortBy('date');
+
+        $last_container = $plant->containers->last();
+        $last_relocation = $last_container->relocations->last();
+        $img_path = $plant->img_filename ? Storage::url('img/' . $plant->img_filename) : null;
+        $Container = Container::class;
+
+        return view('plants.show', compact(
+            'plant',
+            'actions',
+            'last_container',
+            'last_relocation',
+            'img_path',
+            'Container',
+        ));
     }
 
-    # Метод, обновляющий информацию о растении в БД
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $this->plantExistsCheck($id);
+        $this->plantAliveCheck($id);
+
+        $plant = Plant::find($id);
+
+        return view('plants.edit', compact('plant'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, $id)
     {
-        $this->existsOrDeadCheck($id);
+        $this->plantExistsCheck($id);
+        $this->plantAliveCheck($id);
 
         $validatedRequest = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'required|string|max:255',
         ]);
 
         Plant::find($id)->update($validatedRequest);
 
-        return redirect(route('plant.index', $id));
+        return redirect(route('plants.show', $id));
     }
 
-    # Метод, работающий со страницей занесения данных о гибели растения
-    public function died($id)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
     {
-        $this->existsOrDeadCheck($id);
-
-        $causes = DeathCause::pluck('name', 'id');
-
-        return view('plant.died', compact('id', 'causes'));
+        //
     }
 
-    # Метод, сохраняющий информацию о гибели растении в БД
-    public function storeDeath(Request $request, $id)
+    /**
+     * Check if plant not exist and throw an exception if not.
+     * 
+     * @param int $id
+     * @throws \HttpResponseException
+     */
+    public static function plantNotExistCheck($id)
     {
-        $this->existsOrDeadCheck($id);
-
-        $request->validate([
-            'date_time' => 'required|date',
-            'cause_id' => [
-                'nullable',
-                'integer',
-                Rule::in(DeathCause::pluck('id')),
-            ],
-            'comment' => 'nullable|string',
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            $action = Action::create([
-                'type_id' => '2',
-                'date' => $request->date_time,
-                'comment' => $request->comment,
-                'user_id' => Auth::id(),
-            ]);
-
-            Death::create([
-                'action_id' => $action->id,
-                'plant_id' => $id,
-                'cause_id' => $request->cause_id,
-            ]);
-        } catch (\Illuminate\Database\QueryException $e) {
-            DB::rollback();
-            return back()
-                ->withErrors('Ошибка запроса: ' . $e->getMessage());
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()
-                ->withErrors($e->getMessage());
+        if (Validator::make([$id], [Rule::in(Plant::pluck('id'))])->fails()) {
+            abort(400, "Растение под номером $id уже существует.");
         }
-        DB::commit();
-
-        return back()->withSuccess(true);
     }
 
-    public function transplant($id)
+    /**
+     * Check if plant exists and throw an exception if not.
+     * 
+     * @param int $id
+     * @throws \HttpResponseException
+     */
+    public static function plantExistsCheck($id)
     {
-        $this->existsOrDeadCheck($id);
-        $container_ids = Container::pluck('id')
-            ->reject(fn ($container_id) => $container_id === Plant::find($id)->containers->last()->id)
-            ->sort();
-
-        return view('plant.transplant', compact('id', 'container_ids'));
-    }
-
-    public function storeTransplantation(Request $request, $id)
-    {
-        $this->existsOrDeadCheck($id);
-        if ($request->container_id === Plant::find($id)->containers->last()->id) {
-            abort(404);
+        if (Validator::make([$id], [Rule::in(Plant::pluck('id'))])->fails()) {
+            abort(404, "Растение под номером $id не найдено.");
         }
-
-        $request->validate([
-            'date_time' => 'required|date',
-            'container_id' => [
-                'nullable',
-                'integer',
-                Rule::notIn(Plant::find($id)->containers->last()->id),
-            ],
-            'comment' => 'nullable|string',
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            $action = Action::create([
-                'type_id' => '5',
-                'date' => $request->date_time,
-                'comment' => $request->comment,
-                'user_id' => Auth::id(),
-            ]);
-
-            Planting::create([
-                'action_id' => $action->id,
-                'plant_id' => $id,
-                'container_id' => $request->container_id,
-            ]);
-        } catch (\Illuminate\Database\QueryException $e) {
-            DB::rollback();
-            dd($e->getMessage());
-            return back()
-                ->withErrors('Ошибка запроса: ' . $e->getMessage());
-        } catch (\Exception $e) {
-            DB::rollback();
-            dd($e->getMessage());
-            return back()
-                ->withErrors($e->getMessage());
-        }
-        DB::commit();
-
-        return back()->withSuccess(true);
     }
 
-    public function existsOrDeadCheck($id)
+    /**
+     * Check if plant is alive and throw an exception if not.
+     * 
+     * @param int $id
+     * @throws \HttpResponseException
+     */
+    public static function plantAliveCheck($id)
     {
-        if (
-            Validator::make([$id], [
-                Rule::in(Plant::pluck('id')),
-                Rule::notIn(Death::pluck('plant_id')),
-            ])->fails()
-        ) {
-            abort(404);
+        if (Validator::make([$id], [Rule::notIn(Death::pluck('plant_id'))])->fails()) {
+            abort(400, "Растение под номером $id имеет статус погибшего.");
         }
     }
 }

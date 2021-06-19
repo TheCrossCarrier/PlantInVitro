@@ -1,17 +1,19 @@
-@extends('layouts.add')
+@extends('layouts.form')
 
-@section('add.title', 'растение')
+@section('form.title', 'Добавить растение')
 
-@section('add.content')
+@php $navbar_active = 'add' @endphp
+
+@section('form.content')
     @if ($container_types->isEmpty() || $media->isEmpty() || $taxa->isEmpty())
         <x-alert type="warning">Недостаточно данных для добавления растения, добавьте таксон/питательную среду.</x-alert>
     @endif
 
-    <form action="{{ route('plant.store') }}" method="POST" enctype="multipart/form-data" novalidate>
+    <form action="{{ route('plants.store') }}" method="POST" enctype="multipart/form-data" novalidate>
         @csrf
 
         <div class="mb-3 has-validation">
-            <label class="form-label" for="name">Название</label>
+            <label class="form-label" for="name">Коллекционное имя</label>
             <x-form-control name="name" required autofocus />
         </div>
 
@@ -91,13 +93,13 @@
     </form>
 @endsection
 
-@section('add.success-message')
+@section('form.success-message')
     Растение успешно добавлено
     @if (session('plant_id'))
         <span> под номером {{ session('plant_id') }}.</span>
         @if (session('container_id'))
             <span> В контейнер под номером {{ session('container_id') }}.</span>
         @endif
-        <a class="fw-bold" href="{{ route('plant.index', session('plant_id')) }}"> Перейти к растению.</a>
+        <a class="fw-bold" href="{{ route('plants.show', session('plant_id')) }}"> Перейти к растению.</a>
     @endif
 @endsection

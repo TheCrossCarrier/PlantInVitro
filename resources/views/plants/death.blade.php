@@ -1,10 +1,10 @@
-@extends('layouts.edit')
+@extends('layouts.form')
 
 @php $title = "Гибель растения №$id" @endphp
-@section('edit.title', $title)
+@section('title', $title)
 
-@section('edit.content')
-    <form action="{{ route('plant.store-death', $id) }}" method="POST" novalidate>
+@section('form.content')
+    <form action="{{ route('plants.death.store', $plant_id) }}" method="POST" novalidate>
         @csrf
 
         <div class="mb-3 has-validation">
@@ -35,6 +35,6 @@
     </form>
 @endsection
 
-@section('edit.success-message')
+@section('form.success-message')
     Данные сохранены.
 @endsection

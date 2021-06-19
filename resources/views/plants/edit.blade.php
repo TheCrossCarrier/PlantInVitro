@@ -1,9 +1,9 @@
-@extends('layouts.edit')
+@extends('layouts.form')
 
-@section('edit.title', 'Редактировать растение №' . $plant->id)
+@section('form.title', 'Редактировать растение №' . $plant->id)
 
-@section('edit.content')
-    <form action="{{ route('plant.update', $plant->id) }}" method="POST">
+@section('form.content')
+    <form action="{{ route('plants.update', $plant->id) }}" method="POST">
         @method('PUT')
         @csrf
 
@@ -25,6 +25,6 @@
     </form>
 @endsection
 
-@section('edit.success-message')
+@section('form.success-message')
     Информация обновлена.
 @endsection
